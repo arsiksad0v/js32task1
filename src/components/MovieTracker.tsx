@@ -16,6 +16,14 @@ const MovieTracker: React.FC = () => {
     }
   };
 
+  const updateMovie = (id: number, name: string) => {
+    setMovies(movies.map(movie => (movie.id === id ? { ...movie, name } : movie)));
+  };
+
+  const deleteMovie = (id: number) => {
+    setMovies(movies.filter(movie => movie.id !== id));
+  };
+
   return (
     <div>
       <input
@@ -26,7 +34,7 @@ const MovieTracker: React.FC = () => {
       <button onClick={addMovie}>Add</button>
       <div>
         {movies.map((movie) => (
-          <MovieItem key={movie.id} movie={movie} />
+          <MovieItem key={movie.id} movie={movie} updateMovie={updateMovie} deleteMovie={deleteMovie} />
         ))}
       </div>
     </div>
@@ -35,13 +43,22 @@ const MovieTracker: React.FC = () => {
 
 interface MovieItemProps {
   movie: Movie;
+  updateMovie: (id: number, name: string) => void;
+  deleteMovie: (id: number) => void;
 }
 
-const MovieItem: React.FC<MovieItemProps> = ({ movie }) => {
+const MovieItem: React.FC<MovieItemProps> = ({ movie, updateMovie, deleteMovie }) => {
+  const [name, setName] = useState(movie.name);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setName(e.target.value);
+    updateMovie(movie.id, e.target.value);
+  };
+
   return (
     <div>
-      <input type="text" value={movie.name} readOnly />
-      <button>X</button>
+      <input type="text" value={name} onChange={handleChange} />
+      <button onClick={() => deleteMovie(movie.id)}>X</button>
     </div>
   );
 };
