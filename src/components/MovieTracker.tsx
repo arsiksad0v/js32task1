@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 
 interface Movie {
   id: number;
@@ -34,7 +34,12 @@ const MovieTracker: React.FC = () => {
       <button onClick={addMovie}>Add</button>
       <div>
         {movies.map((movie) => (
-          <MovieItem key={movie.id} movie={movie} updateMovie={updateMovie} deleteMovie={deleteMovie} />
+          <MovieItem
+            key={movie.id}
+            movie={movie}
+            updateMovie={updateMovie}
+            deleteMovie={deleteMovie}
+          />
         ))}
       </div>
     </div>
@@ -47,7 +52,7 @@ interface MovieItemProps {
   deleteMovie: (id: number) => void;
 }
 
-const MovieItem: React.FC<MovieItemProps> = ({ movie, updateMovie, deleteMovie }) => {
+const MovieItem: React.FC<MovieItemProps> = memo(({ movie, updateMovie, deleteMovie }) => {
   const [name, setName] = useState(movie.name);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,6 +66,6 @@ const MovieItem: React.FC<MovieItemProps> = ({ movie, updateMovie, deleteMovie }
       <button onClick={() => deleteMovie(movie.id)}>X</button>
     </div>
   );
-};
+});
 
 export default MovieTracker;
